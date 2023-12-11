@@ -3,3 +3,9 @@ body{
     margin: 0;
     background-color: #eee;
 }
+
+
+input[readonly] {
+    background-color: #e9ecef;
+    pointer-events: none;
+}

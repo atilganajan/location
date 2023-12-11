@@ -3,6 +3,7 @@
 @section('title', 'Location App')
 
 @section('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
     <link rel="stylesheet" href="{{ asset('assets/css/home/home.css') }}" >
 @endsection
 
@@ -26,9 +27,22 @@
                 </div>
                 <div class="modal-body">
                     <form id="createLocationForm">
+                        <div id="map" style="width: 100%; height: 400px;"></div>
                         <div>
                             <label for="createLocationNameInput">Name:</label>
-                            <input class="form-control shadow-sm" id="createLocationNameInput" type="text" maxlength="100" name="name">
+                            <div class="row" >
+                                <div class="col-10" ><input class="form-control shadow-sm" id="createLocationNameInput" type="text"  name="name"></div>
+                                <div class="col-2 ps-0" ><button class="btn btn-primary w-100" type="button" onclick="findLocation()">Find</button></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="createLocationNameInput">Latitude:</label>
+                            <input class="form-control shadow-sm" id="createLocationLatitudeInput" type="text" readonly value="0" name="latitude">
+                        </div>
+                        <div>
+                            <label for="createLocationNameInput">Longitude:</label>
+                            <input class="form-control shadow-sm" id="createLocationLongitudeNameInput" type="text" readonly value="0"  name="longitude">
+
                         </div>
                     </form>
                 </div>
@@ -45,5 +59,9 @@
 
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
     <script src="{{asset('assets/js/home/home.js')}}" ></script>
+    <script>
+
+    </script>
 @endsection
