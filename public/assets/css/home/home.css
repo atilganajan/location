@@ -1,0 +1,30 @@
+.top-action{
+    padding-left: 3px;
+}
+
+.top-action .card{
+    border: none;
+    background-color:#eee ;
+}
+
+
+.top-action .card div {
+    padding: 20px 50px;
+    margin: 10px 0px ;
+    border-radius: 8px;
+    background-color: green;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: white;
+    font-size: 20px;
+}
+
+.top-action .card p {
+    height: 30px;
+    padding-top: 5px;
+}
+
+.top-action .card div:hover {
+    background-color: rgba(13, 110, 253,1)!important;
+
+}
