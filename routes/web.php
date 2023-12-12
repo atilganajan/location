@@ -15,3 +15,5 @@ use App\Http\Controllers\LocationController;
 */
 
 Route::get('/', [LocationController::class,"index"])->name("index");
+
+Route::post('/create', [LocationController::class,"store"])->name("store");

@@ -26,22 +26,27 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="createLocationForm">
+                    <form id="createLocationForm" action="{{route("store")}}" >
+                        @csrf
                         <div id="map" style="width: 100%; height: 400px;"></div>
                         <div>
                             <label for="createLocationNameInput">Name:</label>
                             <div class="row" >
-                                <div class="col-10" ><input class="form-control shadow-sm" id="createLocationNameInput" type="text"  name="name"></div>
+                                <div class="col-10" ><input class="form-control shadow-sm" id="createLocationNameInput" placeholder="Example: Güvercin Sokağı, Levent Mahallesi, Beşiktaş, Istanbul, Marmara Region, 34330, Turkey" type="text"  name="name"></div>
                                 <div class="col-2 ps-0" ><button class="btn btn-primary w-100" type="button" onclick="findLocation()">Find</button></div>
                             </div>
                         </div>
                         <div>
                             <label for="createLocationNameInput">Latitude:</label>
-                            <input class="form-control shadow-sm" id="createLocationLatitudeInput" type="text" readonly value="0" name="latitude">
+                            <input class="form-control shadow-sm" id="createLocationLatitudeInput" type="text" readonly placeholder="Example: 41.0788495" name="latitude">
                         </div>
                         <div>
                             <label for="createLocationNameInput">Longitude:</label>
-                            <input class="form-control shadow-sm" id="createLocationLongitudeNameInput" type="text" readonly value="0"  name="longitude">
+                            <input class="form-control shadow-sm" id="createLocationLongitudeNameInput" type="text" readonly placeholder="Example: 29.0204988"  name="longitude">
+                        </div>
+                        <div>
+                            <label for="createLocationColorInput">Marker Color(hexadecimal):</label>
+                            <input class="form-control shadow-sm createLocationColorInput" id="createLocationColorInput" type="text"  name="marker_color">
 
                         </div>
                     </form>
@@ -60,8 +65,7 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
-    <script src="{{asset('assets/js/home/home.js')}}" ></script>
-    <script>
 
-    </script>
+    <script src="{{asset('assets/js/home/home.js')}}" ></script>
+
 @endsection

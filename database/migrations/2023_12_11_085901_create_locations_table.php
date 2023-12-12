@@ -13,7 +13,7 @@ class CreateLocationsTable extends Migration
             $table->string('name');
             $table->double('latitude');
             $table->double('longitude');
-            $table->string('marker_color')->default('#FF0000');
+            $table->string('marker_color');
             $table->timestamps();
         });
     }
