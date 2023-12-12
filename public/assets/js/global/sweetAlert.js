@@ -1,5 +1,9 @@
 class AlertMessages {
     static showAlerts(messages, icon, timer) {
+        if (typeof messages === 'string') {
+            messages = [messages];
+        }
+
         let showMessages = "";
         messages.forEach(message => {
             showMessages +=`${message} <br>`

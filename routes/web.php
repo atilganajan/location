@@ -16,4 +16,9 @@ use App\Http\Controllers\LocationController;
 
 Route::get('/', [LocationController::class,"index"])->name("index");
 
-Route::post('/create', [LocationController::class,"store"])->name("store");
+Route::prefix('location')->name('location.')->group(function (){
+    Route::get('/list', [LocationController::class,"list"])->name("list");
+    Route::post('/create', [LocationController::class,"store"])->name("store");
+});
+
+

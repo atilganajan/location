@@ -4,6 +4,10 @@ body{
     background-color: #eee;
 }
 
+td, th{
+    text-align: center !important;
+}
+
 
 input[readonly] {
     background-color: #e9ecef;
