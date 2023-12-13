@@ -9,7 +9,10 @@
 @endsection
 
 @section('content')
-    <div class="top-action row w-100 m-0 justify-content-center ">
+
+    <div id="routingMap" style="width: 100%; height: 500px;"></div>
+
+    <div class="top-action row w-100 mt-4 justify-content-center ">
         <div class="card col-lg-4">
             <div class="text-center" onclick="openCreateModal()">
                 <p><i class="fa-solid fa-map-pin"></i> Create Location</p>
@@ -18,7 +21,7 @@
     </div>
 
 
-    <div class="p-5">
+    <div class="p-5 pt-0">
         <table class="table table-striped table-class student-table" id="locationTable">
             <thead>
             <tr>
@@ -26,15 +29,18 @@
                 <th>Latitude</th>
                 <th>Longitude</th>
                 <th>Marker Color</th>
-                <th width="15%" >Action</th>
+                <th width="15%">Action</th>
             </tr>
             </thead>
             <thead>
             <tr>
                 <th><input type="text" class="form-control shadow-sm filterInput " placeholder="Search name..."></th>
-                <th><input type="text" class="form-control shadow-sm filterInput " placeholder="Search latitude..."></th>
-                <th><input type="text" class="form-control shadow-sm filterInput " placeholder="Search longitude..."></th>
-                <th><input type="text" class="form-control shadow-sm filterInput " placeholder="Search marker color..."></th>
+                <th><input type="text" class="form-control shadow-sm filterInput " placeholder="Search latitude...">
+                </th>
+                <th><input type="text" class="form-control shadow-sm filterInput " placeholder="Search longitude...">
+                </th>
+                <th><input type="text" class="form-control shadow-sm filterInput " placeholder="Search marker color...">
+                </th>
                 <th></th>
             </tr>
             </thead>
@@ -51,23 +57,25 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalTitle" >Create Location</h1>
+                    <h1 class="modal-title fs-5" id="modalTitle">Create Location</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="locationForm" action="" data-method="" data-create-url="{{route("location.store")}}" data-update-url="{{route("location.update")}}" >
+                    <form id="locationForm" action="" data-method="" data-create-url="{{route("location.store")}}"
+                          data-update-url="{{route("location.update")}}">
                         @csrf
-                        <input type="hidden" id="location_id" name="location_id"  >
+                        <input type="hidden" id="location_id" name="location_id">
                         <div id="map" style="width: 100%; height: 400px;"></div>
                         <div>
                             <label for="locationName">Name:</label>
                             <div class="row">
                                 <div class="col-10" id="findParentDiv">
                                     <input class="form-control shadow-sm" id="locationName"
-                                                           placeholder="Example: Güvercin Sokağı, Levent Mahallesi, Beşiktaş, Istanbul, Marmara Region, 34330, Turkey"
-                                                           type="text" name="name"></div>
+                                           placeholder="Example: Güvercin Sokağı, Levent Mahallesi, Beşiktaş, Istanbul, Marmara Region, 34330, Turkey"
+                                           type="text" name="name"></div>
                                 <div class="col-2 ps-0">
-                                    <button class="btn btn-primary w-100" type="button" id="findLocationBtn" onclick="findLocation(true)">
+                                    <button class="btn btn-primary w-100" type="button" id="findLocationBtn"
+                                            onclick="findLocation(true)">
                                         Find
                                     </button>
                                 </div>
@@ -93,13 +101,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="saveLocationBtn" onclick="saveLocation()">Save</button>
+                    <button type="button" class="btn btn-success" id="saveLocationBtn" onclick="saveLocation()">Save
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     <!--Location modal End-->
-
 
 @endsection
 
@@ -108,8 +116,8 @@
     <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
     <script src="{{asset('assets/js/home/home.js')}}"></script>
     <script>
-        $(document).ready(function() {
-            $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+        $(document).ready(function () {
+            $("body").tooltip({selector: '[data-toggle=tooltip]'});
         });
         const locationTable = $('#locationTable').DataTable({
             paging: true,
@@ -132,7 +140,7 @@
                 const trimmedName = location.name.length > 30 ? location.name.substring(0, 30) + '...' : location.name;
 
                 const fullText = location.name;
-                let showButton=`<button class="btn btn-sm bg-info text-white me-2" onclick="openShowModal('{{ route('location.show', ['id' => ':locationId']) }}')"><i class="fa-solid fa-map"></i></button>`
+                let showButton = `<button class="btn btn-sm bg-info text-white me-2" onclick="openShowModal('{{ route('location.show', ['id' => ':locationId']) }}')"><i class="fa-solid fa-map"></i></button>`
                 showButton = showButton.replace(':locationId', location.id);
                 let updateButton = `<button class="btn btn-sm bg-primary text-white me-2" onclick="openUpdateModal(${location.id},'{{ route('location.show', ['id' => ':locationId']) }}')" ><i class="fa-solid fa-square-pen"></i></button>`;
                 updateButton = updateButton.replace(':locationId', location.id);
@@ -149,11 +157,93 @@
                     ${deleteButton}`
                 ]).draw();
             });
-
-
         }).fail(function (err) {
             console.log(err);
         });
+
+
+        const locations = [
+            {id: 1, name: 'Location 1', latitude: 38.0788495, longitude: 33.0204988, marker_color: '#CD5C5C'},
+            {id: 2, name: 'Location 2', latitude: 45.0788495, longitude: 36.0204988, marker_color: '#FFBF00'},
+            {id: 3, name: 'Location 3', latitude: 30.0788495, longitude: 25.0204988, marker_color: '#CCCCFF'},
+            {id: 4, name: 'Location 4', latitude: 23.0788495, longitude: 19.0204988, marker_color: '#6495ED'},
+        ];
+
+        const routingMap = new ol.Map({
+            layers: [new ol.layer.Tile({source: new ol.source.OSM()})],
+            target: 'routingMap',
+            view: new ol.View({
+                center: ol.proj.fromLonLat([33.0204988, 38.0788495]),
+                zoom: 1,
+                constrainRotation: false,
+                extent: ol.proj.get('EPSG:3857').getExtent(),
+            }),
+        });
+
+        const vectorLayer = new ol.layer.Vector();
+        routingMap.addLayer(vectorLayer);
+
+        const vectorSource = new ol.source.Vector();
+        vectorLayer.setSource(vectorSource);
+
+        const locationFeatures = [];
+
+        locations.forEach(location => {
+
+            const routingOverlayElement = document.createElement('div');
+            routingOverlayElement.innerHTML = `<i class="fa-solid fa-location-dot"  style="color:${location.marker_color} ; font-size: 26px"></i>`;
+
+            const routingOverlay = new ol.Overlay({
+                position: ol.proj.fromLonLat([location.longitude, location.latitude]),
+                element: routingOverlayElement,
+                positioning: 'bottom-center',
+                offset: [0, 4],
+                stopEvent: false
+            });
+
+            const tooltip = new ol.Overlay({
+                position: ol.proj.fromLonLat([location.longitude, location.latitude]),
+                element: document.createElement('div'),
+                offset: [0, -15],
+                positioning: 'bottom-center',
+            });
+
+            routingOverlayElement.addEventListener('mouseenter', () => {
+
+                const distanceOtherLocations = onMarkerClick(location);
+
+                const tooltipContent = `<div style="background-color: #333; color: #fff; padding: 8px; border-radius: 4px;   font-size: 14px;" ><div style="text-align: center; border-bottom: 1px solid white" >${location.name}</div>  ${distanceOtherLocations}</div>`;
+                tooltip.getElement().innerHTML = tooltipContent;
+                routingMap.addOverlay(tooltip);
+            });
+
+            routingOverlayElement.addEventListener('mouseleave', () => {
+                routingMap.removeOverlay(tooltip);
+            });
+
+            routingMap.addOverlay(routingOverlay);
+
+        });
+
+
+        function onMarkerClick(location) {
+            const endpointCoords = ol.proj.fromLonLat([location.longitude, location.latitude]);
+            let html = "";
+            locations.forEach(otherLocation => {
+                if (otherLocation.id !== location.id) {
+                    const otherCoords = ol.proj.fromLonLat([otherLocation.longitude, otherLocation.latitude]);
+
+                    const distance = ol.sphere.getDistance(endpointCoords, otherCoords);
+
+                    const content = `<span>Distance: ${otherLocation.name} -> ${distance.toFixed(2)} metre</span> <br>`;
+
+
+                    html += content;
+                }
+            });
+
+            return html;
+        }
 
 
     </script>
