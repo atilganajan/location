@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 trait LocationValidationTrait
 {
@@ -35,7 +36,8 @@ trait LocationValidationTrait
             } else {
                 return 'Location not found.';
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception $err) {
+            Log::error("Check location tolarance  Error:".$err->getMessage());
             return 'Unexpected error.';
         }
 
