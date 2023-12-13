@@ -24,18 +24,17 @@ class LocationController extends Controller
           return response()->json(["status"=>true,"locations"=>$this->locations->get()]);
        }catch (\Exception $err){
            Log::error("Listing locations Error:".$err->getMessage());
-            return response()->json(["status"=>false,"message"=>"Unexpected error"]);
+            return response()->json(["status"=>false,"errors"=>"Unexpected error"]);
        }
    }
 
    public function store(CreateLocationRequest $request){
-
        try {
            $this->locations->create($request->all());
            return response()->json(["status"=>true,"message"=>"Location created successfully."]);
        }catch (\Exception $err){
            Log::error("Create Location Error:".$err->getMessage());
-           return response()->json(["status"=>false,"message"=>"Unexpected error"],500);
+           return response()->json(["status"=>false,"errors"=>"Unexpected error"],500);
        }
 
    }
@@ -45,7 +44,7 @@ class LocationController extends Controller
            return response()->json(["status"=>true,"location"=>$this->locations->find($id)]);
        }catch (\Exception $err){
            Log::error("Show Location Error:".$err->getMessage());
-           return response()->json(["status"=>false,"message"=>"Unexpected error"],500);
+           return response()->json(["status"=>false,"errors"=>"Unexpected error"],500);
        }
    }
 
@@ -55,7 +54,7 @@ class LocationController extends Controller
             return response()->json(["status"=>true,"message"=>"Location updated successfully."]);
         }catch (\Exception $err){
             Log::error("Update Location Error:".$err->getMessage());
-            return response()->json(["status"=>false,"message"=>"Unexpected error"],500);
+            return response()->json(["status"=>false,"errors"=>"Unexpected error"],500);
         }
     }
 
@@ -65,7 +64,7 @@ class LocationController extends Controller
             return response()->json(["status"=>true,"message"=>"Location deleted successfully."]);
         }catch (\Exception $err){
             Log::error("Delete Location Error:".$err->getMessage());
-            return response()->json(["status"=>false,"message"=>"Unexpected error"],500);
+            return response()->json(["status"=>false,"errors"=>"Unexpected error"],500);
         }
     }
 

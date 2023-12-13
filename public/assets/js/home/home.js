@@ -1,5 +1,5 @@
 const map = new ol.Map({
-    layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+    layers: [new ol.layer.Tile({source: new ol.source.OSM()})],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([29.0204988, 41.0788495]),
@@ -36,7 +36,7 @@ const overlay = new ol.Overlay({
 map.addOverlay(overlay);
 
 
-map.on('click',function  (evt) {
+map.on('click', function (evt) {
     const coords = ol.proj.toLonLat(evt.coordinate);
     const lat = coords[1];
     const lon = coords[0];
@@ -47,7 +47,7 @@ map.on('click',function  (evt) {
     }).done(function (data) {
         const locationName = data.display_name;
 
-        if(locationName === undefined){
+        if (locationName === undefined) {
             AlertMessages.showError(["No such location was found."], 2500);
             return false;
         }
@@ -57,8 +57,8 @@ map.on('click',function  (evt) {
         findLocation(false)
 
     }).fail(function (error) {
-            AlertMessages.showError(["Error fetching location name"], 2500);
-        });
+        AlertMessages.showError(["Error fetching location name"], 2500);
+    });
 });
 
 
@@ -79,7 +79,7 @@ function findLocation(isCenter) {
             $("#locationLatitude").val(lat);
             $("#locationLongitude").val(lon);
 
-            if(isCenter){
+            if (isCenter) {
                 const newCenter = ol.proj.fromLonLat([lon, lat]);
                 map.getView().setCenter(newCenter);
             }
@@ -105,31 +105,31 @@ function findLocation(isCenter) {
 }
 
 
-function saveLocation(){
+function saveLocation() {
 
     const formData = $("#locationForm").serialize();
     const routeName = $("#locationForm").attr('action');
     const method = $("#locationForm").data("method");
 
     $.ajax({
-        type:method ,
+        type: method,
         url: routeName,
         data: formData,
 
-    }).done(function (data){
+    }).done(function (data) {
         $("#locationModal").modal("hide");
-        AlertMessages.showSuccess(data.message,2500);
-        setTimeout(function (){
+        AlertMessages.showSuccess(data.message, 2500);
+        setTimeout(function () {
             window.location.reload();
-        },2500)
-    }).fail(function (err){
-        AlertMessages.showError(err.responseJSON.message,2500)
+        }, 2500)
+    }).fail(function (err) {
+        AlertMessages.showError(err.responseJSON.errors, 2500)
     });
 
 }
 
 
-function deleteLocation(id,routeName){
+function deleteLocation(id, routeName) {
 
     AlertConfirmModals.confirmModal("Are you sure?", "You won't be able to revert this!", "warning")
         .then((isConfirmed) => {
@@ -138,21 +138,19 @@ function deleteLocation(id,routeName){
                     type: 'DELETE',
                     url: routeName,
                     data: {
-                        id:id,
+                        id: id,
                     },
-                }).done(function (data){
-                    AlertMessages.showSuccess(data.message,2500);
-                    setTimeout(function (){
+                }).done(function (data) {
+                    AlertMessages.showSuccess(data.message, 2500);
+                    setTimeout(function () {
                         window.location.reload();
-                    },2500);
-                }).fail(function (err){
-                    AlertMessages.showError(err.responseJSON.message,2500)
+                    }, 2500);
+                }).fail(function (err) {
+                    AlertMessages.showError(err.responseJSON.errors, 2500)
                 });
             }
         });
-
 }
-
 
 
 function openCreateModal() {
@@ -161,40 +159,40 @@ function openCreateModal() {
 }
 
 
-function openUpdateModal(locationId,routeName){
+function openUpdateModal(locationId, routeName) {
     resetMap();
     $.ajax({
         type: "GET",
         url: routeName,
-    }).done(function (data){
+    }).done(function (data) {
         const location = data.location;
         $("#locationName").val(location.name);
         $("#locationLatitude").val(location.latitude);
         $("#locationLongitude").val(location.longitude);
         $("#locationColor").val(location.marker_color).trigger("input");
-        $("#modalTitle").html("Update Location");
+        $("#modalTitle").html("Update Location <small style='font-size: 13px'>(You can mark the location on the map or locate it with find by typing the location name.)</small>");
         $("#location_id").val(locationId);
 
         $("#findLocationBtn").trigger("click");
 
-        $("#locationForm").attr("action",$("#locationForm").data("update-url"));
-        $("#locationForm").data("method","PUT");
+        $("#locationForm").attr("action", $("#locationForm").data("update-url"));
+        $("#locationForm").data("method", "PUT");
 
         $("#locationModal").modal("show");
 
-    }).fail(function (err){
-        AlertMessages.showError(err.responseJSON.message,2500)
+    }).fail(function (err) {
+        AlertMessages.showError(err.responseJSON.errors, 2500)
     });
 
 }
 
-function openShowModal(routeName){
+function openShowModal(routeName) {
     resetMap();
 
     $.ajax({
         type: "GET",
         url: routeName,
-    }).done(function (data){
+    }).done(function (data) {
         const location = data.location;
         $("#locationName").val(location.name);
         $("#locationLatitude").val(location.latitude);
@@ -206,39 +204,40 @@ function openShowModal(routeName){
 
         $("#saveLocationBtn").hide();
         $("#findLocationBtn").hide();
-        $("#locationName").attr("disabled",true);
-        $("#locationColor").attr("disabled",true);
+        $("#locationName").attr("disabled", true);
+        $("#locationColor").attr("disabled", true);
         $("#findParentDiv").removeClass("col-10");
         $("#findParentDiv").addClass("col-12");
 
-
+        $("#map").css("pointer-events","none");
 
         $("#locationModal").modal("show");
 
-    }).fail(function (err){
-        AlertMessages.showError(err.responseJSON.message,2500)
+    }).fail(function (err) {
+        AlertMessages.showError(err.responseJSON.errors, 2500)
     });
 
 }
 
-function resetMap(){
+function resetMap() {
+    $("#map").css("pointer-events","auto");
     $("#locationName").val("");
     $("#locationLatitude").val("");
     $("#locationLongitude").val("");
     $("#locationColor").val("").trigger("input");
-    $("#modalTitle").html("Create Location");
+    $("#modalTitle").html("Create Location <small style='font-size: 13px'>(You can mark the location on the map or locate it with find by typing the location name.)</small>");
     $("#location_id").val("");
 
     $("#saveLocationBtn").show();
     $("#findLocationBtn").show();
-    $("#locationName").attr("disabled",false);
-    $("#locationColor").attr("disabled",false);
+    $("#locationName").attr("disabled", false);
+    $("#locationColor").attr("disabled", false);
     $("#findParentDiv").removeClass("col-12");
     $("#findParentDiv").addClass("col-10");
 
 
-    $("#locationForm").attr("action",$("#locationForm").data("create-url"));
-    $("#locationForm").data("method","POST");
+    $("#locationForm").attr("action", $("#locationForm").data("create-url"));
+    $("#locationForm").data("method", "POST");
 
     const newCenter = ol.proj.fromLonLat([29.0204988, 41.0788495]);
     map.getView().setCenter(newCenter);

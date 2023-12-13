@@ -18,7 +18,7 @@ trait LocationValidationTrait
 
             $data = json_decode($response->body());
 
-            if (count($data) > 0) {
+            if ($response->status() !==400 && count($data) > 0) {
                 $apiLat = $data[0]->lat;
                 $apiLon = $data[0]->lon;
 

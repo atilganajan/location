@@ -3,6 +3,9 @@ class AlertMessages {
         if (typeof messages === 'string') {
             messages = [messages];
         }
+        if (typeof messages === 'object') {
+            messages = Object.keys(messages).map(function (key) { return messages[key]; });
+        }
 
         let showMessages = "";
         messages.forEach(message => {

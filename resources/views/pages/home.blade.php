@@ -22,6 +22,7 @@
 
 
     <div class="p-5 pt-0">
+
         <table class="table table-striped table-class student-table" id="locationTable">
             <thead>
             <tr>
@@ -122,9 +123,10 @@
         const locationTable = $('#locationTable').DataTable({
             paging: true,
             searching: true,
-            ordering: true,
+            ordering: false,
             info: true,
-            responsive: true
+            responsive: true,
+
         });
 
         $('.filterInput').on('keyup', function () {
@@ -136,7 +138,9 @@
             url: "{{route("location.list")}}",
         }).done(function (data) {
             $('#locationTable').DataTable().clear();
-            data.locations.forEach(function (location) {
+            const locations = data.locations;
+
+            locations.forEach(function (location) {
                 const trimmedName = location.name.length > 30 ? location.name.substring(0, 30) + '...' : location.name;
 
                 const fullText = location.name;
@@ -157,93 +161,90 @@
                     ${deleteButton}`
                 ]).draw();
             });
+
+            const routingMap = new ol.Map({
+                layers: [new ol.layer.Tile({source: new ol.source.OSM()})],
+                target: 'routingMap',
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([33.0204988, 38.0788495]),
+                    zoom: 1,
+                    constrainRotation: false,
+                    extent: ol.proj.get('EPSG:3857').getExtent(),
+                }),
+            });
+
+            const vectorLayer = new ol.layer.Vector();
+            routingMap.addLayer(vectorLayer);
+
+            const vectorSource = new ol.source.Vector();
+            vectorLayer.setSource(vectorSource);
+
+            locations.forEach(location => {
+
+                const routingOverlayElement = document.createElement('div');
+                routingOverlayElement.innerHTML = `<i class="fa-solid fa-location-dot"  style="color:${location.marker_color} ; font-size: 26px"></i>`;
+
+                const routingOverlay = new ol.Overlay({
+                    position: ol.proj.fromLonLat([location.longitude, location.latitude]),
+                    element: routingOverlayElement,
+                    positioning: 'bottom-center',
+                    offset: [0, 4],
+                    stopEvent: false
+                });
+
+                const tooltip = new ol.Overlay({
+                    position: ol.proj.fromLonLat([location.longitude, location.latitude]),
+                    element: document.createElement('div'),
+                    offset: [0, -15],
+                    positioning: 'bottom-center',
+                });
+
+                routingOverlayElement.addEventListener('mouseenter', () => {
+
+                    const distanceOtherLocations = onMarkerHover(location);
+
+                    const tooltipContent = `<div style="background-color: #333; color: #fff; padding: 8px; border-radius: 4px;   font-size: 14px;" ><div style="text-align: center; border-bottom: 1px solid white" >${location.name}</div>  ${distanceOtherLocations}</div>`;
+                    tooltip.getElement().innerHTML = tooltipContent;
+                    routingMap.addOverlay(tooltip);
+                });
+
+                routingOverlayElement.addEventListener('mouseleave', () => {
+                    routingMap.removeOverlay(tooltip);
+                });
+
+                routingMap.addOverlay(routingOverlay);
+
+            });
+
+
+            function onMarkerHover(location) {
+                const endpointCoords = ol.proj.fromLonLat([location.longitude, location.latitude]);
+                let html = "";
+                locations.forEach(otherLocation => {
+                    if (otherLocation.id !== location.id) {
+                        const otherCoords = ol.proj.fromLonLat([otherLocation.longitude, otherLocation.latitude]);
+
+                        const distance = ol.sphere.getDistance(endpointCoords, otherCoords);
+
+                        const content = `<span>Distance: ${otherLocation.name} -> ${distance.toFixed(2)} metre</span> <br>`;
+
+
+                        html += content;
+                    }
+                });
+
+                return html;
+            }
+
         }).fail(function (err) {
-            console.log(err);
+            AlertConfirmModals.confirmModal("Unexpected error", "Refresh the page ", "error")
+                .then((isConfirmed) => {
+                    if (isConfirmed) {
+                        window.location.reload();
+                    }
+                });
         });
 
-
-        const locations = [
-            {id: 1, name: 'Location 1', latitude: 38.0788495, longitude: 33.0204988, marker_color: '#CD5C5C'},
-            {id: 2, name: 'Location 2', latitude: 45.0788495, longitude: 36.0204988, marker_color: '#FFBF00'},
-            {id: 3, name: 'Location 3', latitude: 30.0788495, longitude: 25.0204988, marker_color: '#CCCCFF'},
-            {id: 4, name: 'Location 4', latitude: 23.0788495, longitude: 19.0204988, marker_color: '#6495ED'},
-        ];
-
-        const routingMap = new ol.Map({
-            layers: [new ol.layer.Tile({source: new ol.source.OSM()})],
-            target: 'routingMap',
-            view: new ol.View({
-                center: ol.proj.fromLonLat([33.0204988, 38.0788495]),
-                zoom: 1,
-                constrainRotation: false,
-                extent: ol.proj.get('EPSG:3857').getExtent(),
-            }),
-        });
-
-        const vectorLayer = new ol.layer.Vector();
-        routingMap.addLayer(vectorLayer);
-
-        const vectorSource = new ol.source.Vector();
-        vectorLayer.setSource(vectorSource);
-
-        const locationFeatures = [];
-
-        locations.forEach(location => {
-
-            const routingOverlayElement = document.createElement('div');
-            routingOverlayElement.innerHTML = `<i class="fa-solid fa-location-dot"  style="color:${location.marker_color} ; font-size: 26px"></i>`;
-
-            const routingOverlay = new ol.Overlay({
-                position: ol.proj.fromLonLat([location.longitude, location.latitude]),
-                element: routingOverlayElement,
-                positioning: 'bottom-center',
-                offset: [0, 4],
-                stopEvent: false
-            });
-
-            const tooltip = new ol.Overlay({
-                position: ol.proj.fromLonLat([location.longitude, location.latitude]),
-                element: document.createElement('div'),
-                offset: [0, -15],
-                positioning: 'bottom-center',
-            });
-
-            routingOverlayElement.addEventListener('mouseenter', () => {
-
-                const distanceOtherLocations = onMarkerClick(location);
-
-                const tooltipContent = `<div style="background-color: #333; color: #fff; padding: 8px; border-radius: 4px;   font-size: 14px;" ><div style="text-align: center; border-bottom: 1px solid white" >${location.name}</div>  ${distanceOtherLocations}</div>`;
-                tooltip.getElement().innerHTML = tooltipContent;
-                routingMap.addOverlay(tooltip);
-            });
-
-            routingOverlayElement.addEventListener('mouseleave', () => {
-                routingMap.removeOverlay(tooltip);
-            });
-
-            routingMap.addOverlay(routingOverlay);
-
-        });
-
-
-        function onMarkerClick(location) {
-            const endpointCoords = ol.proj.fromLonLat([location.longitude, location.latitude]);
-            let html = "";
-            locations.forEach(otherLocation => {
-                if (otherLocation.id !== location.id) {
-                    const otherCoords = ol.proj.fromLonLat([otherLocation.longitude, otherLocation.latitude]);
-
-                    const distance = ol.sphere.getDistance(endpointCoords, otherCoords);
-
-                    const content = `<span>Distance: ${otherLocation.name} -> ${distance.toFixed(2)} metre</span> <br>`;
-
-
-                    html += content;
-                }
-            });
-
-            return html;
-        }
 
 
     </script>
