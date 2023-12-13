@@ -11,7 +11,7 @@
 @section('content')
     <div class="top-action row w-100 m-0 justify-content-center ">
         <div class="card col-lg-4">
-            <div class="text-center" onclick="openCreateLocationModal()">
+            <div class="text-center" onclick="openCreateModal()">
                 <p><i class="fa-solid fa-map-pin"></i> Create Location</p>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 <th>Latitude</th>
                 <th>Longitude</th>
                 <th>Marker Color</th>
-                <th>Action</th>
+                <th width="15%" >Action</th>
             </tr>
             </thead>
             <thead>
@@ -51,22 +51,23 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">Create Location</h1>
+                    <h1 class="modal-title fs-5" id="modalTitle" >Create Location</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="locationForm" action="{{route("location.store")}}">
+                    <form id="locationForm" action="" data-method="" data-create-url="{{route("location.store")}}" data-update-url="{{route("location.update")}}" >
                         @csrf
+                        <input type="hidden" id="location_id" name="location_id"  >
                         <div id="map" style="width: 100%; height: 400px;"></div>
                         <div>
                             <label for="locationName">Name:</label>
                             <div class="row">
-                                <div class="col-10">
+                                <div class="col-10" id="findParentDiv">
                                     <input class="form-control shadow-sm" id="locationName"
                                                            placeholder="Example: Güvercin Sokağı, Levent Mahallesi, Beşiktaş, Istanbul, Marmara Region, 34330, Turkey"
                                                            type="text" name="name"></div>
                                 <div class="col-2 ps-0">
-                                    <button class="btn btn-primary w-100" type="button" onclick="findLocation(true)">
+                                    <button class="btn btn-primary w-100" type="button" id="findLocationBtn" onclick="findLocation(true)">
                                         Find
                                     </button>
                                 </div>
@@ -92,7 +93,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" onclick="saveLocation()">Save</button>
+                    <button type="button" class="btn btn-success" id="saveLocationBtn" onclick="saveLocation()">Save</button>
                 </div>
             </div>
         </div>
@@ -127,11 +128,15 @@
             url: "{{route("location.list")}}",
         }).done(function (data) {
             $('#locationTable').DataTable().clear();
-
             data.locations.forEach(function (location) {
-                const trimmedName = location.name.length > 50 ? location.name.substring(0, 50) + '...' : location.name;
+                const trimmedName = location.name.length > 30 ? location.name.substring(0, 30) + '...' : location.name;
 
                 const fullText = location.name;
+                let showButton=`<button class="btn btn-sm bg-info text-white me-2" onclick="openShowModal('{{ route('location.show', ['id' => ':locationId']) }}')"><i class="fa-solid fa-map"></i></button>`
+                showButton = showButton.replace(':locationId', location.id);
+                let updateButton = `<button class="btn btn-sm bg-primary text-white me-2" onclick="openUpdateModal(${location.id},'{{ route('location.show', ['id' => ':locationId']) }}')" ><i class="fa-solid fa-square-pen"></i></button>`;
+                updateButton = updateButton.replace(':locationId', location.id);
+                const deleteButton = `<button class="btn btn-sm bg-danger text-white" onclick="deleteLocation(${location.id},'{{ route('location.delete')}}')"><i class="fa-solid fa-trash"></i></button>`
 
                 $('#locationTable').DataTable().row.add([
                     `<span data-toggle="tooltip"  title="${fullText}">${trimmedName}</span>`,
@@ -139,11 +144,12 @@
                     location.longitude,
                     location.marker_color,
                     `
-                <button class="btn btn-sm bg-info text-white me-2" onclick="openShowModal(${location.id})"><i class="fa-solid fa-map"></i></button>
-                <button class="btn btn-sm bg-primary text-white me-2" onclick="OpenUpdateModal(${location.id})"><i class="fa-solid fa-square-pen"></i></button>
-                <button class="btn btn-sm bg-danger text-white" onclick="deleteLocation(${location.id})"><i class="fa-solid fa-trash"></i></button>`
+                    ${showButton}
+                    ${updateButton}
+                    ${deleteButton}`
                 ]).draw();
             });
+
 
         }).fail(function (err) {
             console.log(err);

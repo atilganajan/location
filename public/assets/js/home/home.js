@@ -104,27 +104,164 @@ function findLocation(isCenter) {
     });
 }
 
-function openCreateLocationModal() {
-    $("#locationModal").modal("show");
-}
 
 function saveLocation(){
 
     const formData = $("#locationForm").serialize();
     const routeName = $("#locationForm").attr('action');
+    const method = $("#locationForm").data("method");
 
     $.ajax({
-        type: "POST",
+        type:method ,
         url: routeName,
         data: formData,
 
     }).done(function (data){
         $("#locationModal").modal("hide");
-        AlertMessages.showSuccess(data.message,2500)
+        AlertMessages.showSuccess(data.message,2500);
+        setTimeout(function (){
+            window.location.reload();
+        },2500)
     }).fail(function (err){
         AlertMessages.showError(err.responseJSON.message,2500)
     });
 
 }
+
+
+function deleteLocation(id,routeName){
+
+    AlertConfirmModals.confirmModal("Are you sure?", "You won't be able to revert this!", "warning")
+        .then((isConfirmed) => {
+            if (isConfirmed) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: routeName,
+                    data: {
+                        id:id,
+                    },
+                }).done(function (data){
+                    AlertMessages.showSuccess(data.message,2500);
+                    setTimeout(function (){
+                        window.location.reload();
+                    },2500);
+                }).fail(function (err){
+                    AlertMessages.showError(err.responseJSON.message,2500)
+                });
+            }
+        });
+
+}
+
+
+
+function openCreateModal() {
+    resetMap();
+    $("#locationModal").modal("show");
+}
+
+
+function openUpdateModal(locationId,routeName){
+    resetMap();
+    $.ajax({
+        type: "GET",
+        url: routeName,
+    }).done(function (data){
+        const location = data.location;
+        $("#locationName").val(location.name);
+        $("#locationLatitude").val(location.latitude);
+        $("#locationLongitude").val(location.longitude);
+        $("#locationColor").val(location.marker_color).trigger("input");
+        $("#modalTitle").html("Update Location");
+        $("#location_id").val(locationId);
+
+        $("#findLocationBtn").trigger("click");
+
+        $("#locationForm").attr("action",$("#locationForm").data("update-url"));
+        $("#locationForm").data("method","PUT");
+
+        $("#locationModal").modal("show");
+
+    }).fail(function (err){
+        AlertMessages.showError(err.responseJSON.message,2500)
+    });
+
+}
+
+function openShowModal(routeName){
+    resetMap();
+
+    $.ajax({
+        type: "GET",
+        url: routeName,
+    }).done(function (data){
+        const location = data.location;
+        $("#locationName").val(location.name);
+        $("#locationLatitude").val(location.latitude);
+        $("#locationLongitude").val(location.longitude);
+        $("#locationColor").val(location.marker_color).trigger("input");
+        $("#modalTitle").html("Show Location");
+
+        $("#findLocationBtn").trigger("click");
+
+        $("#saveLocationBtn").hide();
+        $("#findLocationBtn").hide();
+        $("#locationName").attr("disabled",true);
+        $("#locationColor").attr("disabled",true);
+        $("#findParentDiv").removeClass("col-10");
+        $("#findParentDiv").addClass("col-12");
+
+
+
+        $("#locationModal").modal("show");
+
+    }).fail(function (err){
+        AlertMessages.showError(err.responseJSON.message,2500)
+    });
+
+}
+
+function resetMap(){
+    $("#locationName").val("");
+    $("#locationLatitude").val("");
+    $("#locationLongitude").val("");
+    $("#locationColor").val("").trigger("input");
+    $("#modalTitle").html("Create Location");
+    $("#location_id").val("");
+
+    $("#saveLocationBtn").show();
+    $("#findLocationBtn").show();
+    $("#locationName").attr("disabled",false);
+    $("#locationColor").attr("disabled",false);
+    $("#findParentDiv").removeClass("col-12");
+    $("#findParentDiv").addClass("col-10");
+
+
+    $("#locationForm").attr("action",$("#locationForm").data("create-url"));
+    $("#locationForm").data("method","POST");
+
+    const newCenter = ol.proj.fromLonLat([29.0204988, 41.0788495]);
+    map.getView().setCenter(newCenter);
+
+
+    markers.getSource().clear();
+
+    const overlay = new ol.Overlay({
+        position: ol.proj.fromLonLat([29.0204988, 41.0788495]),
+        element: overlayElement,
+        positioning: 'bottom-center',
+        offset: [0, 4],
+        stopEvent: false
+    });
+
+    map.addOverlay(overlay);
+
+}
+
+
+
+
+
+
 
 

@@ -21,15 +21,14 @@ class LocationRepository
         return Location::create($data);
     }
 
-    public function update($id, array $data)
+    public function update( array $data)
     {
-        $location = Location::find($id);
-        if ($location) {
-            $location->update($data);
-            return $location;
-        }
+        return Location::find($data["location_id"])->update($data);
+    }
 
-        return null;
+    public function delete($id)
+    {
+        return Location::find($id)->delete();
     }
 
 

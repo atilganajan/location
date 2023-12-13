@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateLocationRequest;
+use App\Http\Requests\UpdateLocationRequest;
 use Illuminate\Http\Request;
 use App\Repositories\LocationRepository;
 
@@ -35,6 +36,33 @@ class LocationController extends Controller
        }
 
    }
+
+   public function show($id){
+       try {
+           return response()->json(["status"=>true,"location"=>$this->locations->find($id)]);
+       }catch (\Exception $err){
+           return response()->json(["status"=>false,"message"=>"Unexpected error"],500);
+       }
+   }
+
+    public function update(UpdateLocationRequest $request){
+        try {
+            $this->locations->update($request->all());
+            return response()->json(["status"=>true,"message"=>"Location updated successfully."]);
+        }catch (\Exception $err){
+            return response()->json(["status"=>false,"message"=>"Unexpected error"],500);
+        }
+    }
+
+    public function delete(Request $request){
+        try {
+            $this->locations->delete($request->id);
+            return response()->json(["status"=>true,"message"=>"Location deleted successfully."]);
+        }catch (\Exception $err){
+            return response()->json(["status"=>false,"message"=>"Unexpected error"],500);
+        }
+    }
+
 
 }
 
