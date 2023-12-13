@@ -123,7 +123,7 @@ function saveLocation() {
             window.location.reload();
         }, 2500)
     }).fail(function (err) {
-        AlertMessages.showError(err.responseJSON.errors, 2500)
+        AlertMessages.showError(err.responseJSON.errors ?? err.responseJSON.message , 2500)
     });
 
 }
@@ -146,7 +146,7 @@ function deleteLocation(id, routeName) {
                         window.location.reload();
                     }, 2500);
                 }).fail(function (err) {
-                    AlertMessages.showError(err.responseJSON.errors, 2500)
+                    AlertMessages.showError(err.responseJSON.errors ?? err.responseJSON.message , 2500)
                 });
             }
         });
@@ -181,7 +181,7 @@ function openUpdateModal(locationId, routeName) {
         $("#locationModal").modal("show");
 
     }).fail(function (err) {
-        AlertMessages.showError(err.responseJSON.errors, 2500)
+        AlertMessages.showError(err.responseJSON.errors ?? err.responseJSON.message , 2500)
     });
 
 }
@@ -214,7 +214,8 @@ function openShowModal(routeName) {
         $("#locationModal").modal("show");
 
     }).fail(function (err) {
-        AlertMessages.showError(err.responseJSON.errors, 2500)
+
+        AlertMessages.showError(err.responseJSON.errors ?? err.responseJSON.message , 2500)
     });
 
 }
