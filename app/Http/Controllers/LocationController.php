@@ -26,7 +26,7 @@ class LocationController extends Controller
 
     public function store(CreateLocationRequest $request)
     {
-        $this->locations->create($request->all());
+        $this->locations->create($request->validated());
         return response()->json(["status" => true, "message" => "Location created successfully."]);
     }
 
@@ -38,9 +38,8 @@ class LocationController extends Controller
 
     public function update(UpdateLocationRequest $request)
     {
-        $this->locations->update($request->all());
+        $this->locations->update($request->validated());
         return response()->json(["status" => true, "message" => "Location updated successfully."]);
-
     }
 
     public function delete(Request $request)
