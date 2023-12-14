@@ -28,3 +28,5 @@
 ![Ekran görüntüsü 2023-12-13 071856](https://github.com/atilganajan/location/assets/84190481/98f0e170-2795-47b9-8a9a-81846435baeb)
 
 ![Ekran görüntüsü 2023-12-13 071620](https://github.com/atilganajan/location/assets/84190481/6e626e7d-40f6-48bf-95bf-fad6f1f1e198)
+
+![Ekran görüntüsü 2023-12-14 124009](https://github.com/atilganajan/location/assets/84190481/0f46e3ec-6bb3-441a-a136-43b97f13ef91)
