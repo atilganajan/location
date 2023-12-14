@@ -18,12 +18,22 @@ class LocationRepository
 
     public function create(array $data)
     {
-        return Location::create($data);
+        return Location::create([
+            "name"=> $data["name"],
+            "latitude" => $data["latitude"],
+            "longitude" => $data["longitude"],
+            "marker_color" => $data["marker_color"],
+        ]);
     }
 
     public function update(array $data)
     {
-        return Location::find($data["location_id"])->update($data);
+        return Location::find($data["location_id"])->update([
+            "name"=> $data["name"],
+            "latitude" => $data["latitude"],
+            "longitude" => $data["longitude"],
+            "marker_color" => $data["marker_color"],
+        ]);
     }
 
     public function delete($id)
