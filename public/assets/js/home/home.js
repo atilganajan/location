@@ -128,7 +128,6 @@ function saveLocation() {
 
 }
 
-
 function deleteLocation(id, routeName) {
 
     AlertConfirmModals.confirmModal("Are you sure?", "You won't be able to revert this!", "warning")
@@ -214,7 +213,6 @@ function openShowModal(routeName) {
         $("#locationModal").modal("show");
 
     }).fail(function (err) {
-
         AlertMessages.showError(err.responseJSON.errors ?? err.responseJSON.message , 2500)
     });
 
@@ -255,6 +253,41 @@ function resetMap() {
     });
 
     map.addOverlay(overlay);
+
+}
+
+
+function getRoutingBtn(){
+
+    const formData = $("#routingForm").serialize();
+    const routeName = $("#routingForm").attr('action');
+
+    $.ajax({
+        type: "POST",
+        url: routeName,
+        data: formData,
+
+    }).done(function (data) {
+
+        let html ="";
+
+        data.locations.forEach((location)=>{
+            let content = `
+             <tr>
+                <td>${location.name}</td>
+                <td>${location.latitude}</td>
+                <td>${location.longitude}</td>
+                <td>${location.marker_color}</td>
+            </tr>
+            `;
+            html +=content;
+        })
+
+        $("#routingTableBody").html(html);
+
+    }).fail(function (err) {
+        AlertMessages.showError(err.responseJSON.errors ?? err.responseJSON.message , 2500)
+    });
 
 }
 

@@ -21,7 +21,7 @@ class LocationRepository
         return Location::create($data);
     }
 
-    public function update( array $data)
+    public function update(array $data)
     {
         return Location::find($data["location_id"])->update($data);
     }
@@ -30,6 +30,8 @@ class LocationRepository
     {
         return Location::find($id)->delete();
     }
+
+
 
 
 }

@@ -52,6 +52,49 @@
         </table>
     </div>
 
+    <div>
+        <div class="d-flex justify-content-center" >
+            <h2>Routing</h2>
+        </div>
+
+        <div class="container" >
+            <form id="routingForm" method="POST" action="{{route("location.routing")}}" >
+                @csrf
+                <div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="routingLatitude">Latitude:</label>
+                            <input class="form-control shadow-sm" id="routingLatitude" name="latitude">
+                        </div>
+                        <div class="col-6">
+                            <label for="routingLongitude">Longitude:</label>
+                            <input class="form-control shadow-sm" id="routingLongitude" name="longitude">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center my-3" >
+                    <button class="btn btn-success w-25" type="button" onclick="getRoutingBtn()" >Routing</button>
+                </div>
+            </form>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">name</th>
+                    <th scope="col">Latitude</th>
+                    <th scope="col">Longitude</th>
+                    <th scope="col">Marker Color</th>
+                </tr>
+                </thead>
+                <tbody id="routingTableBody" >
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
 
     <!--Location modal Start-->
     <div class="modal fade show modal-xl" id="locationModal" data-bs-backdrop='static'>

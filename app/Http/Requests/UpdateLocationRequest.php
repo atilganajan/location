@@ -24,7 +24,9 @@ class UpdateLocationRequest extends FormRequest
     public function messages()
     {
         return [
-            'marker_color.regex' => 'Color must be in hexedecimal color code format.',
+            'marker_color.required' => 'The Marker Color field is required.',
+            'marker_color.regex' => 'Marker Color must be in hexedecimal color code format.',
+            'location_id' =>"Something missing"
         ];
     }
 

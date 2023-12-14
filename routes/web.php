@@ -22,6 +22,8 @@ Route::prefix('location')->name('location.')->group(function (){
     Route::get('/{id}', [LocationController::class,"show"])->name("show");
     Route::put('/update', [LocationController::class,"update"])->name("update")->middleware('throttle:10,1');
     Route::delete('/delete', [LocationController::class,"delete"])->name("delete")->middleware('throttle:10,1');
+
+    Route::post('/routing', [LocationController::class,"routing"])->name("routing")->middleware('throttle:10,1');
 });
 
 
