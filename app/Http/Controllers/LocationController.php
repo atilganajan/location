@@ -9,6 +9,7 @@ use App\Http\Resources\LocationCollaction;
 use App\Http\Resources\LocationResource;
 use App\Http\Resources\RoutingLocationCollaction;
 use App\Repositories\LocationRepository;
+use App\Services\RoutingService;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
@@ -56,13 +57,12 @@ class LocationController extends Controller
 
     public function routing(RoutingLocationRequest $request)
     {
-        $data = [
-            "locations" => $this->locations->get(),
-            "lat" => $request->latitude,
-            "lon" => $request->longitude,
-        ];
 
-        return response()->json(["status" => true, "locations" => new RoutingLocationCollaction($data)]);
+        $routingService = new RoutingService();
+
+        $locations = $routingService->processRouting( $this->locations->get(), $request->latitude,$request->longitude);
+
+        return response()->json(["status" => true, "locations" => new RoutingLocationCollaction($locations)]);
     }
 
 

@@ -5,7 +5,6 @@ namespace App\Traits;
 trait RoutingLocation
 {
     protected function routingByDistance($lat,$lon,$locations){
-
         $locations = array_map(function($location) use ($lat, $lon) {
             $location["distance"] = $this->haversineDistance($lat,$lon,$location["latitude"],$location["longitude"]);
             return $location;

@@ -18,22 +18,18 @@ class LocationRepository
 
     public function create(array $data)
     {
-        return Location::create([
-            "name"=> $data["name"],
-            "latitude" => $data["latitude"],
-            "longitude" => $data["longitude"],
-            "marker_color" => $data["marker_color"],
-        ]);
+        $fillableFields = ['name', 'latitude', 'longitude', 'marker_color'];
+        $fillableData = array_only($data, $fillableFields);
+
+        return Location::create($fillableData);
     }
 
     public function update(array $data)
     {
-        return Location::find($data["location_id"])->update([
-            "name"=> $data["name"],
-            "latitude" => $data["latitude"],
-            "longitude" => $data["longitude"],
-            "marker_color" => $data["marker_color"],
-        ]);
+        $fillableFields = ['name', 'latitude', 'longitude', 'marker_color'];
+        $fillableData = array_only($data, $fillableFields);
+
+        return Location::find($data["location_id"])->update($fillableData);
     }
 
     public function delete($id)

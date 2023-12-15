@@ -9,8 +9,6 @@ class LocationCollaction extends ResourceCollection
 {
     public function toArray(Request $request): array
     {
-        return $this->collection->map(function ($location){
-           return new LocationResource($location);
-        })->all();
+        return $this->collection->toArray();
     }
 }
