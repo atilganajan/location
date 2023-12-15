@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Location;
+use Illuminate\Support\Arr;
 
 class LocationRepository
 {
@@ -18,8 +19,9 @@ class LocationRepository
 
     public function create(array $data)
     {
+
         $fillableFields = ['name', 'latitude', 'longitude', 'marker_color'];
-        $fillableData = array_only($data, $fillableFields);
+        $fillableData = Arr::only($data, $fillableFields);
 
         return Location::create($fillableData);
     }
@@ -27,7 +29,7 @@ class LocationRepository
     public function update(array $data)
     {
         $fillableFields = ['name', 'latitude', 'longitude', 'marker_color'];
-        $fillableData = array_only($data, $fillableFields);
+        $fillableData = Arr::only($data, $fillableFields);
 
         return Location::find($data["location_id"])->update($fillableData);
     }

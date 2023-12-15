@@ -181,7 +181,7 @@
             url: "{{route("location.list")}}",
         }).done(function (data) {
             $('#locationTable').DataTable().clear();
-            const locations = data.locations;
+            const locations = data.data;
 
             locations.forEach(function (location) {
                 const trimmedName = location.name.length > 30 ? location.name.substring(0, 30) + '...' : location.name;
